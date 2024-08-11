@@ -1,30 +1,45 @@
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
+    color: #333;
 }
 
 header {
     background-color: #550ec7;
     color: white;
     padding: 20px;
+    width: 100%;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 main {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    text-align: center;
 }
 
 #problem-section {
-    text-align: center;
+    margin-bottom: 20px;
 }
+
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -37,7 +52,15 @@ input[type=number] {
 }
 
 #problem-display {
-    font-size: 24px;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #8b14cf;
+}
+
+#timer-display {
+    font-size: 18px;
+    color: #fd4d2ed8;
     margin-bottom: 20px;
 }
 
@@ -46,12 +69,44 @@ input[type=number] {
     font-size: 18px;
     width: 100px;
     text-align: center;
+    border: 2px solid #550ec7;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    margin-right: 5px;
 }
 
 #submit-answer {
-    margin-top: 10px;
-    padding: 10px 20px;
+    background-color: #7b2ef7;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+#feedback-section {
+    margin-top: 20px;
+}
+
+#feedback-message {
     font-size: 18px;
+    color: #333;
 }
 
 footer {
@@ -59,8 +114,7 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
-}
-
-#feedback-section {
-    margin-top: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
 }
