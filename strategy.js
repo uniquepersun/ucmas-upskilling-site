@@ -3,6 +3,7 @@ let timer;
 let timeLeft = 50;
 let timerStarted = false;
 let difficulty = 'easy';
+let skippedProblems = 0;
 
 document.getElementById('user-answer').addEventListener('focus', function() {
     if (!timerStarted) {
@@ -38,19 +39,40 @@ function startTimer() {
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('user-answer').value);
     const feedbackMessage = document.getElementById('feedback-message');
+    const answerField = document.getElementById('user-answer');
     const correctAnswer = parseInt(document.getElementById('problem-display').getAttribute('data-answer'));
 
-    if (isNaN(userAnswer)) {
-        feedbackMessage.textContent = "Noope!, that's empty, it'll be considered as wrong";
-    } else if (userAnswer === correctAnswer) {
-        score++;
-        feedbackMessage.textContent = `correct! Your score: ${score}`;
+    if (userAnswer === '') {
+        skipProblem()
     } else {
-        feedbackMessage.textContent = `incorrect! Your score: ${score}`;
-    }
+        const userAnswerNumber = parseInt(userAnswer);
 
+        if (isNaN(userAnswerNumber)) {
+            feedbackMessage.textContent = "Noope!, that's an invalid answer, it'll be considered as wrong";
+            answerField.classList.add('incorrect');
+        } else if (userAnswerNumber === correctAnswer) {
+            score++;
+            feedbackMessage.textContent = `Correct! Your score: ${score}`;
+            answerField.classList.add('correct');
+        } else {
+            feedbackMessage.textContent = `Incorrect! Your score: ${score}`;
+            answerField.classList.add('incorrect');
+        }
+
+        setTimeout(function() {
+            answerField.classList.remove('correct');
+            answerField.classList.remove('incorrect');
+        }, 250);
+    }
     document.getElementById('user-answer').value = '';
 
+    generateProblem();
+}
+
+function skipProblem() {
+    skippedProblems++;
+    feedbackMessage.textContent = `I see you skipped that. I'll increment skipped problems counter: ${skippedProblems}`;
+        document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
     generateProblem();
 }
 
@@ -94,6 +116,10 @@ function generateProblem() {
             correctAnswer = num1 * num2;
             break;
         case 3:
+            if (num2 === 0) {
+                num2 = 1;
+                division
+            }
             problemText = `${num1 * num2} ÷ ${num1} = ?`;
             correctAnswer = num2;
             break;
@@ -112,21 +138,22 @@ function resetGame() {
     document.getElementById('feedback-message').textContent = '';
     document.getElementById('user-answer').value = '';
     document.getElementById('timer-display').textContent = `Time left: ${timeLeft}s`;
-    document.getElementById('difficulty-easy').addEventListener('click', function() {
-        difficulty = 'easy';
-        resetGame();
-    });
-    
-    document.getElementById('difficulty-medium').addEventListener('click', function() {
-        difficulty = 'medium';
-        resetGame();
-    });
-    
-    document.getElementById('difficulty-hard').addEventListener('click', function() {
-        difficulty = 'hard';
-        resetGame();
-    });
+    document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
 }
+document.getElementById('difficulty-easy').addEventListener('click', function() {
+    difficulty = 'easy';
+    resetGame();
+});
+
+document.getElementById('difficulty-medium').addEventListener('click', function() {
+    difficulty = 'medium';
+    resetGame();
+});
+
+document.getElementById('difficulty-hard').addEventListener('click', function() {
+    difficulty = 'hard';
+    resetGame();
+});
 generateProblem();
 
 

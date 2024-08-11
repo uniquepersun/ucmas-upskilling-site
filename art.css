@@ -118,3 +118,12 @@ footer {
     position: fixed;
     bottom: 0;
 }
+.correct {
+    background-color: #b8e6b9;
+    transition: background-color 0.5s ease;
+}
+
+.incorrect {
+    background-color: #f7b6a2;
+    transition: background-color 0.5s ease;
+}
