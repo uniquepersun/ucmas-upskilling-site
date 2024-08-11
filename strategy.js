@@ -2,6 +2,7 @@ let score = 0;
 let timer;
 let timeLeft = 50;
 let timerStarted = false;
+let difficulty = 'easy';
 
 document.getElementById('user-answer').addEventListener('focus', function() {
     if (!timerStarted) {
@@ -40,7 +41,7 @@ function submitAnswer() {
     const correctAnswer = parseInt(document.getElementById('problem-display').getAttribute('data-answer'));
 
     if (isNaN(userAnswer)) {
-        feedbackMessage.textContent = "Noope!, that's an empty answer, it'll be considered as wrong";
+        feedbackMessage.textContent = "Noope!, that's empty, it'll be considered as wrong";
     } else if (userAnswer === correctAnswer) {
         score++;
         feedbackMessage.textContent = `correct! Your score: ${score}`;
@@ -54,8 +55,24 @@ function submitAnswer() {
 }
 
 function generateProblem() {
-    const num1 = Math.floor(Math.random() * 10) + 1;
-    const num2 = Math.floor(Math.random() * 10) + 1;
+    const difficulty = document.getElementById('difficulty').value;
+    let num1, num2;
+    
+    switch (difficulty) {
+        case 'easy':
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            break;
+        case 'medium':
+            num1 = Math.floor(Math.random() * 50) + 1;
+            num2 = Math.floor(Math.random() * 50) + 1;
+            break;
+        case 'hard':
+            num1 = Math.floor(Math.random() * 100) + 1;
+            num2 = Math.floor(Math.random() * 100) + 1;
+            break;
+    }
+
     const operation = Math.floor(Math.random() * 4);
     let problemText = '';
     let correctAnswer;
@@ -65,7 +82,10 @@ function generateProblem() {
             problemText = `${num1} + ${num2} = ?`;
             correctAnswer = num1 + num2;
             break;
-        case 1:
+            case 1:
+            if (num1 < num2) {
+                [num1, num2] = [num2, num1];
+            }
             problemText = `${num1} - ${num2} = ?`;
             correctAnswer = num1 - num2;
             break;
@@ -92,6 +112,20 @@ function resetGame() {
     document.getElementById('feedback-message').textContent = '';
     document.getElementById('user-answer').value = '';
     document.getElementById('timer-display').textContent = `Time left: ${timeLeft}s`;
+    document.getElementById('difficulty-easy').addEventListener('click', function() {
+        difficulty = 'easy';
+        resetGame();
+    });
+    
+    document.getElementById('difficulty-medium').addEventListener('click', function() {
+        difficulty = 'medium';
+        resetGame();
+    });
+    
+    document.getElementById('difficulty-hard').addEventListener('click', function() {
+        difficulty = 'hard';
+        resetGame();
+    });
 }
 generateProblem();
 
