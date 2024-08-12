@@ -4,6 +4,8 @@ let timeLeft = 50;
 let timerStarted = false;
 let difficulty = 'easy';
 let skippedProblems = 0;
+let streak = 0;
+let maxStreak = 0;
 
 document.getElementById('user-answer').addEventListener('focus', function() {
     if (!timerStarted) {
@@ -43,16 +45,30 @@ function submitAnswer() {
     const correctAnswer = parseInt(document.getElementById('problem-display').getAttribute('data-answer'));
 
     if (userAnswer === '') {
+        streak = 0;
         skipProblem()
     } else {
         const userAnswerNumber = parseInt(userAnswer);
-
+        
         if (isNaN(userAnswerNumber)) {
+            skippedProblems++
             feedbackMessage.textContent = "Noope!, that's an invalid answer, it'll be considered as wrong";
+            document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
             answerField.classList.add('incorrect');
         } else if (userAnswerNumber === correctAnswer) {
             score++;
-            feedbackMessage.textContent = `Correct! Your score: ${score}`;
+            streak++;
+            if (streak > maxStreak) {
+                maxStreak = streak;
+            }
+            if (score > parseInt(localStorage.getItem('highScore') || 0)) {
+                localStorage.setItem('highScore', score);
+            }
+            if (maxStreak > parseInt(localStorage.getItem('maxStreak') || 0)) {
+                localStorage.setItem('maxStreak', maxStreak);
+            }
+            feedbackMessage.textContent = `Correct! Your score: ${score} (Streak: ${streak})`;
+            answerField.classList.add('correct');
             answerField.classList.add('correct');
         } else {
             feedbackMessage.textContent = `Incorrect! Your score: ${score}`;
@@ -72,12 +88,21 @@ function submitAnswer() {
 function skipProblem() {
     skippedProblems++;
     feedbackMessage.textContent = `I see you skipped that. I'll increment skipped problems counter: ${skippedProblems}`;
-        document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
+    document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
     generateProblem();
 }
 
 function generateProblem() {
-    const difficulty = document.getElementById('difficulty').value;
+    if (streak >= 10 && difficulty === 'easy') {
+        difficulty = 'medium';
+        document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Medium';
+        document.getElementById('difficulty-indicator').style.color = 'orange';
+    } else if (streak >= 20 && difficulty === 'medium') {
+        difficulty = 'hard';
+        document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Hard';
+        document.getElementById('difficulty-indicator').style.color = 'red';
+    }
+
     let num1, num2;
     
     switch (difficulty) {
@@ -104,7 +129,7 @@ function generateProblem() {
             problemText = `${num1} + ${num2} = ?`;
             correctAnswer = num1 + num2;
             break;
-            case 1:
+        case 1:
             if (num1 < num2) {
                 [num1, num2] = [num2, num1];
             }
@@ -132,6 +157,9 @@ function generateProblem() {
 
 function resetGame() {
     score = 0;
+    streak = 0;
+    maxStreak = 0;
+    skippedProblems = 0;
     timeLeft = 50;
     timerStarted = false;
     generateProblem();
@@ -139,7 +167,11 @@ function resetGame() {
     document.getElementById('user-answer').value = '';
     document.getElementById('timer-display').textContent = `Time left: ${timeLeft}s`;
     document.getElementById('skipped-count').textContent = `Skipped problems: ${skippedProblems}`;
+    let highScore = localStorage.getItem('highScore') || 0;
+    let maxStreak = localStorage.getItem('maxStreak') || 0;
+    document.getElementById('feedback-message').textContent = `High Score: ${highScore}, Max Streak: ${maxStreak}`;
 }
+
 document.getElementById('difficulty-easy').addEventListener('click', function() {
     difficulty = 'easy';
     resetGame();
