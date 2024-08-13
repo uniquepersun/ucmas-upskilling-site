@@ -5,12 +5,13 @@ const airtableApiUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTAB
 
 let score = 0;
 let timer;
-let timeLeft = 50;
+let timeLeft = 5;
 let timerStarted = false;
 let difficulty = 'easy';
 let skippedProblems = 0;
 let streak = 0;
 let maxStreak = 0;
+let playername = '';
 
 document.getElementById('user-answer').addEventListener('focus', function() {
     if (!timerStarted) {
@@ -27,6 +28,16 @@ document.getElementById('user-answer').addEventListener('keydown', function(even
     }
 });
 
+function initializeGame() {
+    playername = prompt('Enter your name:');
+    if (playername) {
+        document.getElementById('submit-answer').addEventListener('click', () => saveScore(name, score));
+    }
+
+    generateProblem();
+    loadLeaderboard();
+}
+
 function startTimer() {
     const timerDisplay = document.getElementById('timer-display');
     timerDisplay.textContent = `Time left: ${timeLeft}s`;
@@ -38,6 +49,7 @@ function startTimer() {
         if (timeLeft <= 0) {
             clearInterval(timer);
             alert(`Time is up! Your final score: ${score}`);
+            saveScore(playername, score);
             resetGame();
         }
     }, 1000);
@@ -91,6 +103,32 @@ function submitAnswer() {
 }
 
 function saveScore(name, score) {
+    fetch(`${airtableApiUrl}?filterByFormula={Name}='${name}'`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+    .then(data => {
+        if (data.records.length > 0) {
+            const record = data.records[0];
+            const existingScore = record.fields.Score;
+            const recordId = record.id;
+            
+            if (score > existingScore) {
+                updateScore(recordId, score);
+            } else {
+                console.log('New score is not higher than the existing score. No update performed.');
+            }
+        } else {
+            createScore(name, score);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function createScore(name, score) {
     fetch(airtableApiUrl, {
         method: 'POST',
         headers: {
@@ -105,11 +143,32 @@ function saveScore(name, score) {
         })
     }).then(response => response.json())
     .then(data => {
-        console.log('score saved:', data);
+        console.log('Score created:', data);
         loadLeaderboard();
     })
     .catch(error => console.error('Error:', error));
 }
+
+function updateScore(recordId, score) {
+    fetch(`${airtableApiUrl}/${recordId}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            fields: {
+                Score: score
+            }
+        })
+    }).then(response => response.json())
+    .then(data => {
+        console.log('Score updated:', data);
+        loadLeaderboard();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 
 function loadLeaderboard(offset = '') {
     fetch(`${airtableApiUrl}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10${offset ? `&offset=${offset}` : ''}`, {
@@ -136,16 +195,6 @@ function loadLeaderboard(offset = '') {
         }
     })
     .catch(error => console.error('Error:', error));
-}
-
-function initializeGame() {
-    const name = prompt('Enter your name:');
-    if (name) {
-        document.getElementById('submit-answer').addEventListener('click', () => saveScore(name, score));
-    }
-
-    generateProblem();
-    loadLeaderboard();
 }
 
 function skipProblem() {
