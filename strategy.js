@@ -1,3 +1,8 @@
+const AIRTABLE_PERSONAL_ACCESS_TOKEN = 'patq40RWAi3BzhapZ.d709dde5ca58a0d09303500168a4ed1ea33f52aaaa6e5a15421f163ccad5db0c';
+const AIRTABLE_BASE_ID = 'appZArpvJV1rMqzQ6';
+const AIRTABLE_TABLE_NAME = 'Table 1';
+const airtableApiUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
+
 let score = 0;
 let timer;
 let timeLeft = 50;
@@ -83,6 +88,64 @@ function submitAnswer() {
     document.getElementById('user-answer').value = '';
 
     generateProblem();
+}
+
+function saveScore(name, score) {
+    fetch(airtableApiUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            fields: {
+                Name: name,
+                Score: score
+            }
+        })
+    }).then(response => response.json())
+    .then(data => {
+        console.log('score saved:', data);
+        loadLeaderboard();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function loadLeaderboard(offset = '') {
+    fetch(`${airtableApiUrl}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10${offset ? `&offset=${offset}` : ''}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}`
+        }
+    }).then(response => response.json())
+    .then(data => {
+        const leaderboard = document.getElementById('leaderboard');
+        leaderboard.innerHTML = '<h2>Leaderboard</h2><ul>';
+
+        data.records.forEach(record => {
+            const { Name, Score } = record.fields;
+            leaderboard.innerHTML += `<li>${Name}: ${Score}</li>`;
+        });
+
+        leaderboard.innerHTML += '</ul>';
+
+        if (data.offset) {
+            leaderboard.innerHTML += '<button id="load-more">Load More</button>';
+            document.getElementById('load-more').addEventListener('click', () => loadLeaderboard(data.offset));
+            
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function initializeGame() {
+    const name = prompt('Enter your name:');
+    if (name) {
+        document.getElementById('submit-answer').addEventListener('click', () => saveScore(name, score));
+    }
+
+    generateProblem();
+    loadLeaderboard();
 }
 
 function skipProblem() {
@@ -186,6 +249,7 @@ document.getElementById('difficulty-hard').addEventListener('click', function() 
     difficulty = 'hard';
     resetGame();
 });
-generateProblem();
+
+initializeGame();
 
 
