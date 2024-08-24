@@ -15,23 +15,39 @@
     <main>
         <section id="problem-section">
             <h2>Problem:</h2>
-            <p id="difficulty-indicator">Current Difficulty: Easy</p>
-            <select id="difficulty">
-                <option value="auto">Auto</option>
-                <option value="easy" id="difficulty-easy">Easy</option>
-                <option value="medium" id="difficulty-medium">Medium</option>
-                <option value="hard" id="difficulty-hard">Hard</option>
-            </select>
-            <label for="operation">Choose Operation:</label>
-            <select id="operation">
-                <option value="all">All types</option>
-                <option value="addition">Addition</option>
-                <option value="subtraction">Subtraction</option>
-                <option value="multiplication">Multiplication</option>
-                <option value="division">Division</option>
-            </select>
+            <p id="difficulty-indicator">Current difficulty: Easy</p>
+            <div class="cdo">
+                <div><label for="difficulty">Choose difficulty:</label>
+                    <select id="difficulty">
+                        <option value="auto">Auto</option>
+                        <option value="easy" id="difficulty-easy">Easy</option>
+                        <option value="medium" id="difficulty-medium">Medium</option>
+                        <option value="hard" id="difficulty-hard">Hard</option>
+                    </select>
+                </div>
+                <div><label for="operation">Choose Operation:</label>
+                    <select id="operation">
+                        <option value="all">All types</option>
+                        <option value="addition">Addition</option>
+                        <option value="subtraction">Subtraction</option>
+                        <option value="multiplication">Multiplication</option>
+                        <option value="division">Division</option>
+                    </select>
+                </div>
+                <label for="select-time">Choose Time (in seconds): </label>
+                <div><select id="select-time">
+                        <option value="30">30 seconds</option>
+                        <option value="60">60 seconds</option>
+                        <option value="90">90 seconds</option>
+                        <option value="120">120 seconds</option>
+                    </select>
+                </div>
+                <div><label for="allow-negative">
+                        <input type="checkbox" id="allow-negative"> Allow Negative Answers
+                    </label></div>
+            </div>
             <p id="problem-display">x + x = ?,hint:problem</p>
-            <p id="timer-display">Time left: 50s</p>
+            <p id="timer-display">Time left: 30s</p>
             <input type="number" id="user-answer" placeholder="Your Answer">
             <button id="submit-answer">Submit</button>
             <button id="skip-problem">Skip Problem</button>

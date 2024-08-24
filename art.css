@@ -44,14 +44,15 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
-
 /*
 found out stack overflow,it is for compatability in mozilla browsers:-- 
 */
 input[type=number] {
     -moz-appearance: textfield;
 }
-
+.cdo{
+    margin: 4px;
+}
 #problem-display {
     font-size: 28px;
     font-weight: bold;

@@ -9,7 +9,7 @@ const difficultyThresholds = {
 
 let score = 0;
 let timer;
-let timeLeft = 50;
+let timeLeft = 30;
 let timerStarted = false;
 let difficulty = 'easy';
 let skippedProblems = 0;
@@ -36,20 +36,22 @@ function initializeGame() {
     playername = prompt('Enter your name:');
     if (playername) {
         document.getElementById('submit-answer').addEventListener('click', () => saveScore(playername, score));
-    }
+    }   
+    const timeSelect = document.getElementById('select-time');
+    timeLeft = parseInt(timeSelect.value);
 
     generateProblem();
     loadLeaderboard();
 }
 
 function startTimer() {
+    const timeSelect = document.getElementById('select-time');
+    timeLeft = parseInt(timeSelect.value);
     const timerDisplay = document.getElementById('timer-display');
     timerDisplay.textContent = `Time left: ${timeLeft}s`;
-
     timer = setInterval(function() {
         timeLeft--;
         timerDisplay.textContent = `Time left: ${timeLeft}s`;
-
         if (timeLeft <= 0) {
             clearInterval(timer);
             alert(`Time is up! Your final score: ${score}`);
@@ -234,7 +236,9 @@ function generateProblem() {
     updateDifficulty(score);
 
     let num1, num2;
-    
+
+    const allowNegative = document.getElementById('allow-negative').checked;
+
     switch (difficulty) {
         case 'easy':
             num1 = Math.floor(Math.random() * 10) + 1;
@@ -250,60 +254,36 @@ function generateProblem() {
             break;
     }
 
-    const selectedOperation = document.getElementById('operation').value;
+    const operation = Math.floor(Math.random() * 4);
     let problemText = '';
     let correctAnswer;
 
-    switch (selectedOperation) {
-        case 'addition':
+    switch (operation) {
+        case 0:
             problemText = `${num1} + ${num2} = ?`;
             correctAnswer = num1 + num2;
             break;
-        case 'subtraction':
-            if (num1 < num2) {
+        case 1:
+            if (!allowNegative && num1 < num2) {
                 [num1, num2] = [num2, num1];
             }
             problemText = `${num1} - ${num2} = ?`;
             correctAnswer = num1 - num2;
             break;
-        case 'multiplication':
+        case 2:
             problemText = `${num1} × ${num2} = ?`;
             correctAnswer = num1 * num2;
             break;
-        case 'division':
+        case 3:
             if (num2 === 0) {
-                num2 = 1; 
+                num2 = 1;
+            }
+            if (!allowNegative && num1 * num2 < num1) {
+                [num1, num2] = [num2, num1];
             }
             problemText = `${num1 * num2} ÷ ${num1} = ?`;
             correctAnswer = num2;
             break;
-        case 'all':
-        default:
-            const operation = Math.floor(Math.random() * 4);
-            switch (operation) {
-                case 0:
-                    problemText = `${num1} + ${num2} = ?`;
-                    correctAnswer = num1 + num2;
-                    break;
-                case 1:
-                    if (num1 < num2) {
-                        [num1, num2] = [num2, num1];
-                    }
-                    problemText = `${num1} - ${num2} = ?`;
-                    correctAnswer = num1 - num2;
-                    break;
-                case 2:
-                    problemText = `${num1} × ${num2} = ?`;
-                    correctAnswer = num1 * num2;
-                    break;
-                case 3:
-                    if (num2 === 0) {
-                        num2 = 1;
-                    }
-                    problemText = `${num1 * num2} ÷ ${num1} = ?`;
-                    correctAnswer = num2;
-                    break;
-            }
     }
 
     const problemDisplay = document.getElementById('problem-display');
@@ -312,6 +292,8 @@ function generateProblem() {
 }
 
 function resetGame() {
+    const timeSelect = document.getElementById('select-time');
+    timeLeft = parseInt(timeSelect.value);
     score = 0;
     streak = 0;
     maxStreak = 0;
