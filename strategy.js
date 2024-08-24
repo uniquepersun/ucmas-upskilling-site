@@ -2,10 +2,14 @@ const AIRTABLE_PERSONAL_ACCESS_TOKEN = 'patq40RWAi3BzhapZ.d709dde5ca58a0d0930350
 const AIRTABLE_BASE_ID = 'appZArpvJV1rMqzQ6';
 const AIRTABLE_TABLE_NAME = 'Table 1';
 const airtableApiUrl = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`;
+const difficultyThresholds = {
+    medium: 20,
+    hard: 50,
+};
 
 let score = 0;
 let timer;
-let timeLeft = 5;
+let timeLeft = 50;
 let timerStarted = false;
 let difficulty = 'easy';
 let skippedProblems = 0;
@@ -31,7 +35,7 @@ document.getElementById('user-answer').addEventListener('keydown', function(even
 function initializeGame() {
     playername = prompt('Enter your name:');
     if (playername) {
-        document.getElementById('submit-answer').addEventListener('click', () => saveScore(name, score));
+        document.getElementById('submit-answer').addEventListener('click', () => saveScore(playername, score));
     }
 
     generateProblem();
@@ -204,16 +208,30 @@ function skipProblem() {
     generateProblem();
 }
 
-function generateProblem() {
-    if (streak >= 10 && difficulty === 'easy') {
-        difficulty = 'medium';
-        document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Medium';
-        document.getElementById('difficulty-indicator').style.color = 'orange';
-    } else if (streak >= 20 && difficulty === 'medium') {
-        difficulty = 'hard';
-        document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Hard';
-        document.getElementById('difficulty-indicator').style.color = 'red';
+function updateDifficulty(score) {
+    const selectedDifficulty = document.getElementById('difficulty').value;
+
+    if (selectedDifficulty === 'auto') {
+        if (score >= difficultyThresholds.hard) {
+            difficulty = 'hard';
+            document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Hard';
+            document.getElementById('difficulty-indicator').style.color = 'red';
+        } else if (score >= difficultyThresholds.medium) {
+            difficulty = 'medium';
+            document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Medium';
+            document.getElementById('difficulty-indicator').style.color = 'orange';
+        } else {
+            difficulty = 'easy';
+            document.getElementById('difficulty-indicator').textContent = 'Current Difficulty: Easy';
+            document.getElementById('difficulty-indicator').style.color = 'green';
+        }
+    } else {
+        difficulty = selectedDifficulty;
     }
+}
+
+function generateProblem() {
+    updateDifficulty(score);
 
     let num1, num2;
     
@@ -232,34 +250,60 @@ function generateProblem() {
             break;
     }
 
-    const operation = Math.floor(Math.random() * 4);
+    const selectedOperation = document.getElementById('operation').value;
     let problemText = '';
     let correctAnswer;
 
-    switch (operation) {
-        case 0:
+    switch (selectedOperation) {
+        case 'addition':
             problemText = `${num1} + ${num2} = ?`;
             correctAnswer = num1 + num2;
             break;
-        case 1:
+        case 'subtraction':
             if (num1 < num2) {
                 [num1, num2] = [num2, num1];
             }
             problemText = `${num1} - ${num2} = ?`;
             correctAnswer = num1 - num2;
             break;
-        case 2:
+        case 'multiplication':
             problemText = `${num1} × ${num2} = ?`;
             correctAnswer = num1 * num2;
             break;
-        case 3:
+        case 'division':
             if (num2 === 0) {
-                num2 = 1;
-                division
+                num2 = 1; 
             }
             problemText = `${num1 * num2} ÷ ${num1} = ?`;
             correctAnswer = num2;
             break;
+        case 'all':
+        default:
+            const operation = Math.floor(Math.random() * 4);
+            switch (operation) {
+                case 0:
+                    problemText = `${num1} + ${num2} = ?`;
+                    correctAnswer = num1 + num2;
+                    break;
+                case 1:
+                    if (num1 < num2) {
+                        [num1, num2] = [num2, num1];
+                    }
+                    problemText = `${num1} - ${num2} = ?`;
+                    correctAnswer = num1 - num2;
+                    break;
+                case 2:
+                    problemText = `${num1} × ${num2} = ?`;
+                    correctAnswer = num1 * num2;
+                    break;
+                case 3:
+                    if (num2 === 0) {
+                        num2 = 1;
+                    }
+                    problemText = `${num1 * num2} ÷ ${num1} = ?`;
+                    correctAnswer = num2;
+                    break;
+            }
     }
 
     const problemDisplay = document.getElementById('problem-display');
