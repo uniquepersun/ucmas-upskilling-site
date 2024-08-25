@@ -50,9 +50,11 @@ found out stack overflow,it is for compatability in mozilla browsers:--
 input[type=number] {
     -moz-appearance: textfield;
 }
-.cdo{
-    margin: 4px;
+
+.cdo div{
+    margin: 2px;
 }
+
 #problem-display {
     font-size: 28px;
     font-weight: bold;
@@ -156,7 +158,7 @@ footer a {
 }
 
 footer a:hover {
-    box-shadow: inset 0 -1.2em 0 hsla(0, 0%, 100%, 0.4);
+    box-shadow: inset 0 -1.2em 0 #ffffff66;
 }
 
 footer li:last-child {
@@ -196,4 +198,9 @@ footer li:nth-child(5):hover~li p {
     75% {
         transform: rotate(-15deg);
     }
+}
+
+label[for="practice_mode"] {
+    font-size: 16px;
+    margin-left: 10px;
 }
