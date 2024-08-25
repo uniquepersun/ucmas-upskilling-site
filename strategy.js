@@ -40,21 +40,26 @@ function initializeGame() {
     }   
     const timeSelect = document.getElementById('select-time');
     timeLeft = parseInt(timeSelect.value);
-    if (isPracticeMode) {
-        document.getElementById('timer-display').textContent = 'Practice Mode: No time limit';
-    } else {
-        document.getElementById('timer-display').textContent = `Time left: ${timeLeft}s`;
-    }
+
     generateProblem();
     loadLeaderboard();
 }
 
-function startTimer() {
-    if (isPracticeMode.checked) {
-        const timerDisplay = document.getElementById('timer-display')
-        timerDisplay.textContent = 'practice mode: you are free to go without time boundation';
-        return;
+document.getElementById('practice_mode').addEventListener('change', function() {
+    isPracticeMode = this.checked;
+    if (isPracticeMode) {
+        clearInterval(timer);
+        document.getElementById('timer-display').textContent = 'Practice mode: no time boundation :D';
+    } 
+    else {
+        timeLeft = parseInt(document.getElementById('select-time').value);
+        document.getElementById('timer-display').textContent = `Time left: ${timeLeft}s`;
     }
+    isPracticeMode = this.unchecked;
+    resetGame();
+});
+
+function startTimer() {
     const timeSelect = document.getElementById('select-time');
     timeLeft = parseInt(timeSelect.value);
     const timerDisplay = document.getElementById('timer-display');
