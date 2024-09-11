@@ -4,7 +4,9 @@
 
  
 ## Usage
-grab the latest release page deploy [here](https://uniquepersun.github.io/ucmas-upskilling-site/) OR <br> **here** (https://uniquepersun.hackclub.app/) clone the repo and jump right in! :joystick: and challenge your reflexes! :sunglasses:
+grab the latest release page deploy [here](https://uniquepersun.github.io/ucmas-upskilling-site/) OR <br> **here** (https://uniquepersun.hackclub.app/) clone the repo and jump right in! and challenge your reflexes! :sunglasses:
+But, why two links??<br>
+that's a story for ANOTHER DAY..
 
 
 ## But, how to playy??
