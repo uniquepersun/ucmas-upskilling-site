@@ -18,7 +18,7 @@ you will be answering the questions asked after answering your name firstt obv!!
 - Track your high score and challenge yourself to do better each time! :muscle:
 
 
-## want customisation??:wrench:
+## want customisation?? :wrench:
 Want to change the look or feel? you are very welcomed to make it better for everyone :video_game:
 
 
