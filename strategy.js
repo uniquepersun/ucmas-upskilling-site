@@ -37,7 +37,7 @@ function initializeGame() {
     playername = prompt('Enter your name:');
     if (playername) {
         document.getElementById('submit-answer').addEventListener('click', () => saveScore(playername, score));
-    }   
+    }
     const timeSelect = document.getElementById('select-time');
     timeLeft = parseInt(timeSelect.value);
 
@@ -192,7 +192,7 @@ function updateScore(recordId, score) {
 
 
 function loadLeaderboard(offset = '') {
-    fetch(`${airtableApiUrl}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=10${offset ? `&offset=${offset}` : ''}`, {
+    fetch(`${airtableApiUrl}?sort[0][field]=Score&sort[0][direction]=desc&maxRecords=15${offset ? `&offset=${offset}` : ''}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${AIRTABLE_PERSONAL_ACCESS_TOKEN}`
