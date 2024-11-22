@@ -1,3 +1,9 @@
+:root{
+    --maincolor:#550ec7;
+    --550ec7:#550ec7;
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -5,7 +11,7 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Outfit','Arial', sans-serif;
     background-color: #f4f7fa;
     display: flex;
     flex-direction: column;
@@ -16,12 +22,21 @@ body {
 }
 
 header {
-    background-color: #550ec7;
+    font-family: 'doto','Arial';
+    background-color: var(--maincolor);
     color: white;
     padding: 20px;
     width: 100%;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+header > h1 {
+    font-size: 2.35rem;
+    line-height: 1em;
+}
+header > p {
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 main {
@@ -45,7 +60,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 /*
-found out stack overflow,it is for compatability in mozilla browsers:-- 
+for compatability in mozilla browsers:-- 
 */
 input[type=number] {
     -moz-appearance: textfield;
@@ -124,6 +139,9 @@ button:disabled {
 }
 
 footer {
+    font-family: 'doto', 'Arial';
+    font-weight: bold;
+    font-size:normal;
     background-color: #550ec7;
     color: white;
     text-align: center;
